@@ -25,6 +25,7 @@ import { useRouter } from 'vue-router'
 import { LoginProp } from '../../store'
 import VaildateInput, { RulesProp } from '../ValidateForm/ValidateInput.vue'
 import ValidateForm from '../ValidateForm/ValidateFrom.vue'
+import useMessageCreate from '../../hooks/useMessageCreate'
 export default defineComponent({
   name: 'login',
   components: {
@@ -45,13 +46,16 @@ export default defineComponent({
       email: '',
       password: ''
     })
-    const formSubmit = (result) => {
+    const formSubmit = (result: boolean) => {
       if (result) {
         store.dispatch('loginAndgetCurrent', {
           email: loginInfo.email,
           password: loginInfo.password
-        }).then(() => {
-          router.push({ name: 'home' })
+        }).then(res => {
+          useMessageCreate('登录成功!即将为您跳转到首页!', 'success')
+          setTimeout(() => {
+            router.push({ name: 'home' })
+          }, 1000)
         })
       }
     }

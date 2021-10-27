@@ -10,6 +10,7 @@
 
 <script lang="ts">
 import { defineComponent, onUnmounted, onMounted } from 'vue'
+import useCreateDom from'../../hooks/useCreateDom'
 export default defineComponent({
   props: {
     text: {
@@ -22,12 +23,7 @@ export default defineComponent({
     }
   },
   setup (props) {
-    const node = document.createElement('div')
-    node.id = 'global'
-    document.body.appendChild(node)
-    onUnmounted(() => {
-      document.body.removeChild(node)
-    })
+    useCreateDom('global')
   }
 })
 </script>

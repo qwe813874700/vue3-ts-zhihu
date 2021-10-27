@@ -18,7 +18,7 @@ import mitt from 'mitt'
 type validateFunc = () => boolean
 type Events = {
   'form-item-created': validateFunc,
-  'clear-form'
+  'clear-form': any
 }
 
 export const mitter = mitt<Events>()

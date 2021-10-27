@@ -10,10 +10,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from 'vue'
-import NavHeader, { ILoginProps } from './NavHeader.vue'
+import { defineComponent, computed, watch } from 'vue'
+import NavHeader from './NavHeader.vue'
 import NavFooter from './NavFooter.vue'
 import Loader from '../Loader/Loader.vue'
+import useMessageCreate from '../../hooks/useMessageCreate'
 import { useStore } from 'vuex'
 import { getToken } from '../../tool/tool'
 export default defineComponent({
@@ -25,6 +26,14 @@ export default defineComponent({
   },
   setup () {
     const store = useStore()
+    const error = computed(() => store.state.error)
+    watch(() => error.value.status, () => {
+      console.log(666)
+      const { status, message } = error.value
+      if (status && message) {
+        useMessageCreate(message, 'error')
+      }
+    })
     if (!store.state.user.isLogin && getToken()) {
       store.dispatch('getCurrent')
     }

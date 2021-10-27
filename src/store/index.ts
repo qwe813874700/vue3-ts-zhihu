@@ -8,12 +8,18 @@ export interface  GlobalDataProps {
   user: UserProps
   columnList: ColumnProps[],
   postsList: PostsProps[],
-  loading: boolean
+  loading: boolean,
+  error: ErrorProp
 }
 
 export interface LoginProp {
   email: string
   password: string
+}
+
+export interface ErrorProp {
+  status: boolean
+  message?: string
 }
 const requireMethod = async (config: AxiosRequestConfig = { method: 'GET' }, mutationsName: string, commit: Commit, extraData?: any) => {
   const data = await request(config)
@@ -32,7 +38,10 @@ const store = createStore<GlobalDataProps>({
     },
     columnList: [],
     postsList: [],
-    loading: false
+    loading: false,
+    error: {
+      status: false
+    }
   },
   mutations: {
     addPost(state , data) {
@@ -60,6 +69,9 @@ const store = createStore<GlobalDataProps>({
         token: null
       }
       localStorage.removeItem('token')
+    },
+    setError (state, error) {
+      state.error = error
     }
   },
   actions: {

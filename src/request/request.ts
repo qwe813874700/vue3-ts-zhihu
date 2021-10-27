@@ -9,6 +9,10 @@ const request = axios.create({
 
 request.interceptors.request.use((config: AxiosRequestConfig) => {
   store.commit('setLoading', true)
+  store.commit('setError', {
+    status: false,
+    message: ''
+  })
   if (store.state.user.token) {
     config.headers = {
       ...config.headers,
@@ -27,6 +31,7 @@ request.interceptors.request.use((config: AxiosRequestConfig) => {
   }
   return config
 }, (error) => {
+  store.commit('setLoading', false)
   return Promise.reject(error)
 })
 
@@ -34,7 +39,12 @@ request.interceptors.response.use((response) => {
   store.commit('setLoading', false)
   return response.data
 }, (e) => {
-  const { error } = e.response.error
+  store.commit('setLoading', false)
+  const error  = e.response.data
+  store.commit('setError', {
+    status: true,
+    message: error.error
+  })
   return Promise.reject(error)
 })
 
