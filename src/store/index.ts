@@ -1,13 +1,13 @@
 import { createStore, Commit } from 'vuex'
-import { ColumnProps, UserProps, PostsProps } from '../interface/props'
+import { ColumnPostsListProps, ColumnProps , UserProps, PostsProps } from '../interface/props'
 import { getToken, setToken } from '../tool/tool'
 import { AxiosRequestConfig } from 'axios'
 import request  from '../request/request'
 
 export interface  GlobalDataProps {
   user: UserProps
-  columnList: ColumnProps[],
-  postsList: PostsProps[],
+  columnList: ColumnPostsListProps<ColumnProps>,
+  postsList: ColumnPostsListProps<PostsProps>,
   loading: boolean,
   error: ErrorProp
 }
@@ -20,6 +20,11 @@ export interface LoginProp {
 export interface ErrorProp {
   status: boolean
   message?: string
+}
+
+export interface PageProp {
+  currentPage: number
+  pageSize: number
 }
 const requireMethod = async (config: AxiosRequestConfig = { method: 'GET' }, mutationsName: string, commit: Commit, extraData?: any) => {
   const data = await request(config)
@@ -36,8 +41,18 @@ const store = createStore<GlobalDataProps>({
       nickName: '',
       token: getToken(),
     },
-    columnList: [],
-    postsList: [],
+    columnList: {
+      currentPage: 0,
+      list: [],
+      pageSize: 6,
+      count: 0
+    },
+    postsList: {
+      currentPage: 0,
+      list: [],
+      pageSize: 6,
+      count: 0
+    },
     loading: false,
     error: {
       status: false
@@ -45,7 +60,7 @@ const store = createStore<GlobalDataProps>({
   },
   mutations: {
     addPost(state , data) {
-      state.postsList.push(data)
+      state.postsList.list.push(data)
     },
     login(state, logininfo) {
       const token = `Bearer ${logininfo.data.token}`
@@ -72,6 +87,10 @@ const store = createStore<GlobalDataProps>({
     },
     setError (state, error) {
       state.error = error
+    },
+    setColumnList(state, data) {
+      const oldList = [...state.columnList.list]
+      state.columnList = Object.assign(data.data, { list: oldList.concat(data.data.list) })
     }
   },
   actions: {
@@ -88,6 +107,9 @@ const store = createStore<GlobalDataProps>({
       return dispatch('login', loginInfo).then(res => {
         return dispatch('getCurrent')
       })
+    },
+    getColmnList({ commit }, pageInfo: PageProp) {
+      return requireMethod({ url: `/columns?currentPage=${pageInfo.currentPage}&pageSize=${pageInfo.pageSize}`, method: 'GET' }, 'setColumnList', commit)
     }
   }
 })

@@ -10,7 +10,9 @@ export interface ColumnProps {
   createdAt: string
   key: number
   featured: boolean
+  _id: string
 }
+
 export interface UserProps {
   isLogin: boolean
   column?: string
@@ -31,4 +33,18 @@ export interface PostsProps {
   _id?: string
   title: string
   content?: string
+}
+
+export interface PostsListProps {
+  count: number,
+  currentPage: number,
+  pageSize: number,
+  list: PostsProps[]
+}
+
+export interface ColumnPostsListProps<T> {
+  count: number,
+  currentPage: number,
+  pageSize: number,
+  list: T[]
 }

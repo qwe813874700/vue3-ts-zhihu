@@ -2,12 +2,12 @@
   <div class="column-detail-page w-690 mx-auto mt-5 mb-5">
     <div class="column-info row mb-4 border-bottom pb-4 align-items-center">
       <div class="col-3 text-center">
-        <img src="http://vue-maker.oss-cn-hangzhou.aliyuncs.com/vue-marker/5f3e3a17c305b1070f455202.jpg?x-oss-process=image/resize,m_pad,h_100,w_100" alt="Vehicle攻城狮" class="rounded-circle border w-100">
+        <img :src="`${avatarInfo.avatar.url}?x-oss-process=image/resize,m_pad,h_100,w_100`" alt="Vehicle攻城狮" class="rounded-circle border w-100">
       </div>
       <div class="col-9">
-        <h4>Vehicle攻城狮</h4>
+        <h4>{{ avatarInfo.title }}</h4>
         <p class="text-muted">
-          半吊子系统和程序狗，沉迷高端理论，日渐消瘦。
+          {{ avatarInfo.description }}
         </p>
       </div>
     </div>
@@ -39,12 +39,16 @@
 <script lang="ts">
 import { defineComponent, computed } from 'vue'
 import { useStore } from 'vuex'
+import { useRoute } from 'vue-router'
 import { GlobalDataProps } from '../../store'
 export default defineComponent({
   setup () {
     const store = useStore<GlobalDataProps>()
+    const route = useRoute()
+    
     return {
-      postsList: computed(() => store.state.postsList)
+      postsList: computed(() => store.state.postsList),
+      avatarInfo: computed(() => store.state.columnList.list.filter(item => item._id === route.params.id)[0]) // 根据id获取文章
     }
   }
 })

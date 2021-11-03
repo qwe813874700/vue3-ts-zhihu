@@ -21,6 +21,7 @@ import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 import VaildateInput, { RulesProp } from '../ValidateForm/ValidateInput.vue'
 import ValidateForm from '../ValidateForm/ValidateFrom.vue'
+import useMessageCreate from '../../hooks/useMessageCreate'
 export default defineComponent({
   name: 'login',
   components: {
@@ -44,13 +45,14 @@ export default defineComponent({
       confirmPassword: ''
     })
     
-    const formSubmit = (result) => {
+    const formSubmit = (result: any) => {
       if (result && loginInfo.password === loginInfo.confirmPassword) {
         store.dispatch('register', {
           email: loginInfo.email,
           password: loginInfo.password,
           nickName: loginInfo.nickName
         }).then(res => {
+          useMessageCreate('注册成功', 'success')
           router.push({name: 'login'})
         })
       }
